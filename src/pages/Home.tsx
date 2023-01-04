@@ -21,6 +21,18 @@ const Home = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [checked, setChecked] = useState<string[]>([]);
 
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        let response = await client.get("/read");
+        setProducts(response.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getProducts();
+  }, []);
+
   // Add/Remove checked item from list
   const handleCheck = (event: {
     target: { checked: boolean; value: string };
@@ -34,18 +46,6 @@ const Home = () => {
     setChecked(updatedList);
   };
 
-  useEffect(() => {
-    const getProducts = async () => {
-      try {
-        let response = await client.get("/read");
-        setProducts(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getProducts();
-  }, []);
-
   const handleDelete = async () => {
     try {
       const data = {
@@ -56,8 +56,6 @@ const Home = () => {
         (product) => !checked.includes(product.id)
       );
       setProducts(updatedProducts);
-      console.log(checked);
-      console.log(products);
     } catch (err: any) {
       console.log(`Error: ${err.message}`);
     }
